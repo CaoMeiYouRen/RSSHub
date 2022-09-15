@@ -781,16 +781,6 @@ Example：`https://www.iyingdi.com/tz/people/55547` ，id 是 `55547`
 
 </Route>
 
-### 台服新闻
-
-<Route author="hoilc" example="/loltw/news" path="/loltw/news/:category?" :paramsDesc="['新闻分类，置空为全部新闻']" radar="1" rssbud="1">
-
-| 活动    | 资讯   | 系统     | 电竞     | 版本资讯  | 战棋资讯     |
-| ----- | ---- | ------ | ------ | ----- | -------- |
-| event | info | system | esport | patch | TFTpatch |
-
-</Route>
-
 ## 游民星空
 
 ### 游民星空今日推荐
