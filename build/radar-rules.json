@@ -1585,7 +1585,7 @@
     ]
   },
   "bjfu.edu.cn": {
-    "_name": "北京师范大学",
+    "_name": "北京林业大学",
     "graduate": [
       {
         "title": "研究生院培养动态",
@@ -4962,7 +4962,7 @@
         "target": "/github/contributors/:user/:repo"
       },
       {
-        "title": "Unknown",
+        "title": "File Commits",
         "docs": "https://docs.rsshub.app/routes/programming",
         "source": [
           "/:user/:repo/blob/:branch/*filepath"
@@ -8296,6 +8296,19 @@
       }
     ]
   },
+  "miui.com": {
+    "_name": "MIUI",
+    "web.vip": [
+      {
+        "title": "小米社区用户发帖",
+        "docs": "https://docs.rsshub.app/routes/bbs",
+        "source": [
+          "/page/info/mio/mio/homePage"
+        ],
+        "target": "/miui(_,url)=>`/miui/community/user/${new URL(url).searchParams.get(\"uid\")}`"
+      }
+    ]
+  },
   "modelscope.cn": {
     "_name": "ModelScope 魔搭社区",
     "community": [
@@ -9381,6 +9394,19 @@
           "/"
         ],
         "target": "/nowcoder/schedule"
+      }
+    ]
+  },
+  "ntdm9.com": {
+    "_name": "NT动漫",
+    ".": [
+      {
+        "title": "番剧详情",
+        "docs": "https://docs.rsshub.app/routes/anime",
+        "source": [
+          "/video/:id"
+        ],
+        "target": "/ntdm/video/:id"
       }
     ]
   },
@@ -13734,6 +13760,14 @@
   "twreporter.org": {
     "_name": "報導者",
     ".": [
+      {
+        "title": "分類",
+        "docs": "https://docs.rsshub.app/routes/new-media",
+        "source": [
+          "/:category"
+        ],
+        "target": "/twreporter/category/:category"
+      },
       {
         "title": "最新",
         "docs": "https://docs.rsshub.app/routes/new-media",
