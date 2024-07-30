@@ -79,7 +79,7 @@ RUN \
     rm -rf /app/node_modules /app/scripts && \
     mv /app/app-minimal/node_modules /app/ && \
     rm -rf /app/app-minimal && \
-    pnpm i -g tsx@$(cat /minifier/.tsx_version)
+    pnpm add tsx@$(cat /minifier/.tsx_version) --save-prod
 
 # ---------------------------------------------------------------------------------------------------------------------
 
