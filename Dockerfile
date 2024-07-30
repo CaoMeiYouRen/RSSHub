@@ -39,9 +39,12 @@ WORKDIR /ver
 COPY ./package.json /app/
 RUN \
     set -ex && \
-    grep -Po '(?<="puppeteer": ")[^\s"]*(?=")' /app/package.json | tee /ver/.puppeteer_version
-    # grep -Po '(?<="@vercel/nft": ")[^\s"]*(?=")' /app/package.json | tee /ver/.nft_version && \
-    # grep -Po '(?<="fs-extra": ")[^\s"]*(?=")' /app/package.json | tee /ver/.fs_extra_version
+    grep -Po '(?<="puppeteer": ")[^\s"]*(?=")' /app/package.json | tee /ver/.puppeteer_version  && \
+    grep -Po '(?<="@vercel/nft": ")[^\s"]*(?=")' /app/package.json | tee /ver/.nft_version && \
+    grep -Po '(?<="fs-extra": ")[^\s"]*(?=")' /app/package.json | tee /ver/.fs_extra_version && \
+    grep -Po '(?<="tsx": ")[^\s"]*(?=")' /app/package.json | tee /ver/.tsx_version && \
+    grep -Po '(?<="cross-env": ")[^\s"]*(?=")' /app/package.json | tee /ver/.cross_env_version
+
 
 # ---------------------------------------------------------------------------------------------------------------------
 
@@ -49,33 +52,38 @@ FROM node:22-bookworm-slim AS docker-minifier
 # The stage is used to further reduce the image size by removing unused files.
 
 WORKDIR /app
-# COPY --from=dep-version-parser /ver/* /minifier/
+COPY --from=dep-version-parser /ver/* /minifier/
 
-# ARG USE_CHINA_NPM_REGISTRY=0
-# RUN \
-#     set -ex && \
-#     if [ "$USE_CHINA_NPM_REGISTRY" = 1 ]; then \
-#         npm config set registry https://registry.npmmirror.com && \
-#         yarn config set registry https://registry.npmmirror.com && \
-#         pnpm config set registry https://registry.npmmirror.com ; \
-#     fi; \
-#     corepack enable pnpm && \
-#     pnpm add @vercel/nft@$(cat .nft_version) fs-extra@$(cat .fs_extra_version) --save-prod
+ARG USE_CHINA_NPM_REGISTRY=0
+RUN \
+    set -ex && \
+    if [ "$USE_CHINA_NPM_REGISTRY" = 1 ]; then \
+        npm config set registry https://registry.npmmirror.com && \
+        yarn config set registry https://registry.npmmirror.com && \
+        pnpm config set registry https://registry.npmmirror.com ; \
+    fi; \
+    corepack enable pnpm && \
+    cd /minifier && \
+    pnpm add @vercel/nft@$(cat .nft_version) fs-extra@$(cat .fs_extra_version) --save-prod
 
 COPY . /app
 COPY --from=dep-builder /app /app
 
 RUN \
     set -ex && \
-    # cp /app/scripts/docker/minify-docker.js /minifier/ && \
-    # export PROJECT_ROOT=/app && \
-    # node /minifier/minify-docker.js && \
-    # rm -rf /app/node_modules /app/scripts && \
-    # mv /app/app-minimal/node_modules /app/ && \
-    # rm -rf /app/app-minimal && \
     npm run build && \
     ls -la /app && \
-    du -hd1 /app
+    du -hd1 /app && \
+    cp /app/scripts/docker/minify-docker.js /minifier/ && \
+    export PROJECT_ROOT=/app && \
+    node /minifier/minify-docker.js && \
+    rm -rf /app/node_modules /app/scripts && \
+    mv /app/app-minimal/node_modules /app/ && \
+    rm -rf /app/app-minimal && \
+    rm -rf package.json && \
+    pnpm add tsx@$(cat /minifier/.tsx_version) cross-env@$(cat /minifier/.cross_env_version) --save-prod
+
+COPY ./package.json /app/
 
 # ---------------------------------------------------------------------------------------------------------------------
 
