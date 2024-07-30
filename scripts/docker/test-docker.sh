@@ -5,7 +5,7 @@ MAX_RETRIES=12
 # then try getting homepage in 1 minute
 
 # Run the Docker container in the background
-docker run -d -p 1200:1200 rsshub:latest --name rsshub
+docker run -d -p 1200:1200 --name rsshub rsshub:latest
 
 if [[ $? -ne 0 ]];
 then
