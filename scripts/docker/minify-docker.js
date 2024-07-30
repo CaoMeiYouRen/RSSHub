@@ -13,7 +13,7 @@ const files = ['lib/index.ts', 'api/vercel.ts'].map((file) => path.join(projectR
     const { fileList: fileSet } = await nodeFileTrace(files, {
         base: projectRoot,
     });
-    let fileList = ['node_modules/tsx', 'node_modules/.bin/tsx', ...fileSet];
+    let fileList = [...fileSet];
     console.log('Total touchable files:', fileList.length);
     fileList = fileList.filter((file) => file.startsWith('node_modules/')); // only need node_modules
     console.log('Total files need to be copied (touchable files in node_modules/):', fileList.length);

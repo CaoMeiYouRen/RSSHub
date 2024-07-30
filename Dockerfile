@@ -41,7 +41,10 @@ RUN \
     set -ex && \
     grep -Po '(?<="puppeteer": ")[^\s"]*(?=")' /app/package.json | tee /ver/.puppeteer_version  && \
     grep -Po '(?<="@vercel/nft": ")[^\s"]*(?=")' /app/package.json | tee /ver/.nft_version && \
-    grep -Po '(?<="fs-extra": ")[^\s"]*(?=")' /app/package.json | tee /ver/.fs_extra_version
+    grep -Po '(?<="fs-extra": ")[^\s"]*(?=")' /app/package.json | tee /ver/.fs_extra_version && \
+    grep -Po '(?<="tsx": ")[^\s"]*(?=")' /app/package.json | tee /ver/.tsx_version && \
+    grep -Po '(?<="cross-env": ")[^\s"]*(?=")' /app/package.json | tee /ver/.cross_env_version
+
 
 # ---------------------------------------------------------------------------------------------------------------------
 
@@ -76,7 +79,11 @@ RUN \
     node /minifier/minify-docker.js && \
     rm -rf /app/node_modules /app/scripts && \
     mv /app/app-minimal/node_modules /app/ && \
-    rm -rf /app/app-minimal
+    rm -rf /app/app-minimal && \
+    rm -rf package.json && \
+    pnpm add tsx@$(cat /minifier/.tsx_version) cross-env@$(cat /minifier/.cross_env_version) --save-prod
+
+COPY ./package.json /app/
 
 # ---------------------------------------------------------------------------------------------------------------------
 
