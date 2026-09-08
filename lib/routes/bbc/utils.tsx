@@ -50,7 +50,8 @@ type Block = {
 
 const applyAttributes = (content: JSX.Element | string, attributes?: BlockAttribute[]): JSX.Element | string => {
     let result: JSX.Element | string = content;
-    for (const attribute of attributes ?? []) {
+    const attributeList = attributes ?? [];
+    for (const attribute of attributeList) {
         switch (attribute) {
             case 'bold':
                 result = <strong>{result}</strong>;
@@ -355,21 +356,27 @@ export const extractInitialData = ($: CheerioAPI): any => {
     const initialDataText = JSON.parse(
         $('script:contains("window.__INITIAL_DATA__")')
             .text()
-            .match(/window\.__INITIAL_DATA__\s*=\s*(.*);/)?.[1] ?? '{}'
+            .match(/window\.__INITIAL_DATA__\s*=\s*(\S.*)?;/)?.[1] ?? '"{}"'
     );
 
     return JSON.parse(initialDataText);
 };
 
 const extractArticleWithInitialData = ($: CheerioAPI, item) => {
-    if (item.link.includes('/live/') || item.link.includes('/videos/') || item.link.includes('/extra/')) {
+    if (item.link.includes('/live/') || item.link.includes('/videos/') || item.link.includes('/extra/') || item.link.includes('/sounds/play/')) {
         return {
             description: item.content,
         };
     }
 
     const initialData = extractInitialData($);
-    const article = Object.values(initialData.data).find((d) => d.name === 'article')?.data;
+    if (!initialData || !initialData.data) {
+        return {
+            description: item.content,
+        };
+    }
+
+    const article = Object.values<any>(initialData.data).find((d) => d.name === 'article')?.data;
     const topics = Array.isArray(article?.topics) ? article.topics : [];
     const blocks = article?.content?.model?.blocks;
 
